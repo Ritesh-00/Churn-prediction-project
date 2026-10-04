@@ -21,8 +21,11 @@ def get_model():
     global _model, _config
     if _model is None:
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        model_path = os.path.join(base_dir, "artifacts", "model_pipeline.joblib")
-        config_path = os.path.join(base_dir, "artifacts", "config.json")
+        default_model_path = os.path.join(base_dir, "artifacts", "model_pipeline.joblib")
+        default_config_path = os.path.join(base_dir, "artifacts", "config.json")
+
+        model_path = os.getenv("MODEL_PATH", default_model_path)
+        config_path = os.getenv("CONFIG_PATH", default_config_path)
 
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model artifact not found at {model_path}. Please run train.py first.")
@@ -33,7 +36,8 @@ def get_model():
             with open(config_path, "r", encoding="utf-8") as f:
                 _config = json.load(f)
         else:
-            _config = {"version": "1.0.0", "decision_threshold": 0.40}
+            default_thresh = float(os.getenv("DEFAULT_THRESHOLD", "0.40"))
+            _config = {"version": "1.0.0", "decision_threshold": default_thresh}
             
     return _model, _config
 

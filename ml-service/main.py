@@ -8,6 +8,11 @@ if base_dir not in sys.path:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+# Load .env file if present
+load_dotenv()
+
 from api.routes.predict import router as predict_router, get_model
 
 app = FastAPI(
@@ -17,9 +22,10 @@ app = FastAPI(
 )
 
 # CORS Middleware configuration
+cors_origins = os.getenv("CORS_ORIGINS", "*").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[origin.strip() for origin in cors_origins],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -48,4 +54,7 @@ def root():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    host = os.getenv("HOST", "127.0.0.1")
+    port = int(os.getenv("PORT", "8000"))
+    reload = os.getenv("RELOAD", "true").lower() in ("true", "1", "yes")
+    uvicorn.run("main:app", host=host, port=port, reload=reload)
