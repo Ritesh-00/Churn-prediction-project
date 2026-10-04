@@ -1,0 +1,26 @@
+# API
+fastapi
+uvicorn[standard]
+pydantic
+
+# Data Processing
+numpy
+pandas
+
+# Machine Learning
+scikit-learn
+catboost
+XGBoost
+
+# Model Saving
+joblib
+
+# Visualization / EDA
+matplotlib
+seaborn
+
+# Environment Variables
+python-dotenv
+
+# HTTP Requests
+requests
